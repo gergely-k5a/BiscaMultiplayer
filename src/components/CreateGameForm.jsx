@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion } from "framer-motion";
-import { Container, Form, Button } from 'react-bootstrap'
+import { motion } from 'framer-motion';
+import { Container, Form, Button } from 'react-bootstrap';
 
-import AccordionMenu from './subcomponent/AccordionMenu';
+import AccordionMenu from './subcomponent/AccordionMenu.jsx';
 import socket from '../socket.js';
 
 import '../assets/CreateGameForm.css';
 
 const CreateGameForm = () => {
-  
   const navigate = useNavigate();
 
   const [name, setName] = useState('');
@@ -35,7 +34,9 @@ const CreateGameForm = () => {
       } else {
         setErrorMessage('Game room does not exist.');
         setShowErrorMessage(true);
-        setTimeout(() => { setShowErrorMessage(false); }, 2500);
+        setTimeout(() => {
+          setShowErrorMessage(false);
+        }, 2500);
         console.error(response.error);
       }
     });
@@ -52,12 +53,12 @@ const CreateGameForm = () => {
         className="create-game-form-title"
         initial={{ scale: 0 }}
         animate={{ rotate: 360, scale: 1 }}
-        transition={{ type: "spring", stiffness: 200, damping: 17 }}
+        transition={{ type: 'spring', stiffness: 200, damping: 17 }}
       >
         BISCA!
       </motion.div>
-    )
-  }
+    );
+  };
 
   // Handle the response for creating a room
   const handleSubmit = async (event) => {
@@ -65,7 +66,9 @@ const CreateGameForm = () => {
     if (name.trim() === '') {
       setErrorMessage('Please enter a valid name.');
       setShowErrorMessage(true);
-      setTimeout(() => { setShowErrorMessage(false); }, 2500);
+      setTimeout(() => {
+        setShowErrorMessage(false);
+      }, 2500);
       return;
     }
 
@@ -80,27 +83,30 @@ const CreateGameForm = () => {
     });
   };
 
-
   // Handle the response for joining a room
   const handleGameCode = async (event) => {
     event.preventDefault();
     if (name.trim() === '' && gameID.trim() === '') {
       setErrorMessage('Please enter a valid name/game code.');
       setShowErrorMessage(true);
-      setTimeout(() => { setShowErrorMessage(false); }, 2500);
+      setTimeout(() => {
+        setShowErrorMessage(false);
+      }, 2500);
       return;
     }
 
-    socket.emit('joinGameRoom', ({ gameID: gameID }), (response) => {
+    socket.emit('joinGameRoom', { gameID: gameID }, (response) => {
       if (response.success) {
         navigate(`/waiting/${gameID}`, { state: name });
       } else {
         setErrorMessage('Game code does not exist.');
         setShowErrorMessage(true);
-        setTimeout(() => { setShowErrorMessage(false); }, 2500);
+        setTimeout(() => {
+          setShowErrorMessage(false);
+        }, 2500);
         console.error(response.error);
       }
-    })
+    });
   };
 
   return (
@@ -110,15 +116,25 @@ const CreateGameForm = () => {
         initial={{ opacity: 0, scale: 1 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5 }}
-      > 
+      >
         <Form onSubmit={handleSubmit} style={{ maxWidth: '200px' }}>
           <Form.Group className="mb-2 text-left">
             <Form.Label className="create-game-form-label float-start">
               Player Name:
             </Form.Label>
-            <Form.Control type="text" value={name} onChange={(event) => setName(event.target.value)} className="create-game-form-input" id="name" placeholder="e.g., John" />
+            <Form.Control
+              type="text"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              className="create-game-form-input"
+              id="name"
+              placeholder="e.g., John"
+            />
           </Form.Group>
-          <Button className="mb-3 mb-sm-6 create-game-form-button" type="submit">
+          <Button
+            className="mb-3 mb-sm-6 create-game-form-button"
+            type="submit"
+          >
             CREATE GAME
           </Button>
         </Form>
@@ -127,19 +143,30 @@ const CreateGameForm = () => {
             <Form.Label className="create-game-form-label float-start">
               Game Code:
             </Form.Label>
-            <Form.Control type="text" value={gameID} onChange={(event) => setGameID(event.target.value)} className="create-game-form-input" id="gameID" placeholder="e.g., zdh3fj" />
+            <Form.Control
+              type="text"
+              value={gameID}
+              onChange={(event) => setGameID(event.target.value)}
+              className="create-game-form-input"
+              id="gameID"
+              placeholder="e.g., zdh3fj"
+            />
           </Form.Group>
           <Button className="mb-3 btn join-game-form-button" type="submit">
             JOIN VIA CODE
           </Button>
         </Form>
         <AccordionMenu></AccordionMenu>
-        {showErrorMessage && (<div className="notification-alert notification-alert--error">{errorMessage}</div>)}
+        {showErrorMessage && (
+          <div className="notification-alert notification-alert--error">
+            {errorMessage}
+          </div>
+        )}
       </motion.div>
     </Container>
   );
-}
+};
 
 export default CreateGameForm;
 
-// 
+//
